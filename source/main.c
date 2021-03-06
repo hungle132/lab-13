@@ -59,13 +59,28 @@ void TimerSet(unsigned long M){
 	_avr_timer_M = M;
 	_avr_timer_cntcurr = _avr_timer_M;
 }
+// Pins on PORTA are used as input for A2D conversion
+	//    The default channel is 0 (PA0)
+	// The value of pinNum determines the pin on PORTA
+	//    used for A2D conversion
+	// Valid values range between 0 and 7, where the value
+	//    represents the desired pin for A2D conversion
+void Set_A2D_Pin(unsigned char pinNum) {
+	ADMUX = (pinNum <= 0x07) ? pinNum : ADMUX;
+	// Allow channel to stabilize
+	static unsigned char i = 0;
+	for ( i=0; i<15; i++ ) { asm("nop"); }
+}
+
 
 
 //right max around 750-770
 //neutral is around 400-500
 enum joystick{init,start,left,right}state;
+enum updown {check,up,down} 
 enum display{show}led;
 unsigned char pattern = 0x80;
+unsigned char row = 0xFE;
 unsigned short move = 0x00;
 unsigned char time = 0x00;
 void joy(){
@@ -78,36 +93,36 @@ void joy(){
 
 		case start:
 			if (move  < 150){
-				TimerSet(100);
+			//	TimerSet(100);
 				state = left;
 			}
-			else if (move > 150 && move < 320 ){
+		//	else if (move > 150 && move < 320 ){
 				//time = 250;
-				TimerSet(250);
-				state = left;
-			}
-			else if (move > 320 && move < 370){
-				TimerSet(500);
-				state = left;
-			}
-			else if (move > 350 && move < 420){
-				TimerSet(1000);
-				state= left;
-			}
-			else if (move < 650 && move > 600){
-				TimerSet(1000);
-				state = right;
-			}
-			else if (move < 700 && move > 650){
-				TimerSet(500);
-				state = right;
-			}
-			else if (move < 750 && move > 700){
-				TimerSet(250);
-				state = right;
-			}	
+		//		TimerSet(250);
+		//		state = left;
+		//	}
+		//	else if (move > 320 && move < 370){
+		//		TimerSet(500);
+		//		state = left;
+		//	}
+		//	else if (move > 350 && move < 420){
+		//		TimerSet(1000);
+		//		state= left;
+		//	}
+		//	else if (move < 650 && move > 600){
+		//		TimerSet(1000);
+		//		state = right;
+		//	}
+		//	else if (move < 700 && move > 650){
+		//		TimerSet(500);
+		//		state = right;
+		//	}
+		//	else if (move < 750 && move > 700){
+		//		TimerSet(250);
+		//		state = right;
+		//	}	
 			else if (move > 750){
-				TimerSet(100);
+			//	TimerSet(100);
 				state = right;
 			}
 			else{
@@ -116,20 +131,20 @@ void joy(){
 			break;
 		case left:
 			if (move < 150){
-				TimerSet(100);
-				state = left;
-			}
-			else if (move > 150 && move < 320){
-				TimerSet(250);
-				state = left;
-			}
-			else if (move > 320 && move < 370){
-				TimerSet(500);
-				state = left;
-			}
-			else if (move > 350 && move < 420){
-				TimerSet(1000);
-				state = left;
+		//		TimerSet(100);
+		//		state = left;
+		//	}
+		//	else if (move > 150 && move < 320){
+		//		TimerSet(250);
+		//		state = left;
+		//	}
+		//	else if (move > 320 && move < 370){
+		//		TimerSet(500);
+		//		state = left;
+		//	}
+		//	else if (move > 350 && move < 420){
+		//		TimerSet(1000);
+		//		state = left;
 			}
 			else{
 				state = init;
@@ -139,21 +154,21 @@ void joy(){
 			
 		case right:
 			if (move > 750){
-				TimerSet(100);
+			//	TimerSet(100);
 				state = right;
 			}
-			else if (move < 750 && move > 700){
-				TimerSet(250);
-				state = right;
-			}
-			else if (move < 700 && move > 650){
-				TimerSet(500);
-				state = right;
-			}
-			else if (move < 650 && move > 600){
-				TimerSet(1000);
-				state = right;
-			}
+		//	else if (move < 750 && move > 700){
+		//		TimerSet(250);
+		//		state = right;
+		//	}
+		//	else if (move < 700 && move > 650){
+		//		TimerSet(500);
+		//		state = right;
+		//	}
+		//	else if (move < 650 && move > 600){
+		//		TimerSet(1000);
+		//		state = right;
+		//	}
 			else{
 				state = start;
 			}
@@ -170,26 +185,29 @@ void joy(){
 			break;
 		case left:
 			if(pattern == 0x80)
-				pattern = 0x01;
+				state = left;
 			else
 				pattern = pattern << 1;
 			break;
 		case right:
 			if(pattern == 0x01)
-				pattern = 0x80;
+				state = right;
 			else
 				pattern = pattern >> 1;
 			break;
 	}
 	//time = 100;
-	//TimerSet(time);
+	//TimerSet(1);
 
+}
+void ud(){
+	switch(
 }
 void dis(){
 	switch(led){
 	case show:
 		PORTC = pattern;
-		PORTD = 0xFE;
+		PORTD = row;
 		break;
 
 	default:
@@ -209,6 +227,7 @@ DDRD = 0xFF; PORTD = 0x00;
 ADC_init();
 //TimerSet(100);
 TimerOn();
+TimerSet(100);
 //move = ADC;
     while (1) {
 	    move = ADC;
