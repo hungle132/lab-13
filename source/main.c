@@ -234,6 +234,16 @@ void ud(){
 			TimerSet(250);
 			ad = up;
 			 }
+			 else if ( 320 > val && val < 370 && flag != 4){
+			flag++;
+			TimerSet(500);
+			ad = up;
+			 }
+			 else if ( 370 > val && val < 420 && flag != 4){
+			flag++;
+			TimerSet(1000);
+			ad = up;
+			 }
 			else{
 			ad = check;
 			}
@@ -245,6 +255,11 @@ void ud(){
 			else if (val > 700 && flag != 0){
 			flag--;
 			TimerSet(100);
+			ad = down;
+			}
+			else if (val < 700 && val > 650 && flag != 0){
+			flag--;
+			TimerSet(250);
 			ad = down;
 			}
 			else{
