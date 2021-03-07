@@ -94,36 +94,36 @@ void joy(){
 
 		case start:
 			if (move  < 150){
-			//	TimerSet(100);
+				TimerSet(100);
 				state = left;
 			}
-		//	else if (move > 150 && move < 320 ){
-				//time = 250;
-		//		TimerSet(250);
-		//		state = left;
-		//	}
-		//	else if (move > 320 && move < 370){
-		//		TimerSet(500);
-		//		state = left;
-		//	}
-		//	else if (move > 350 && move < 420){
-		//		TimerSet(1000);
-		//		state= left;
-		//	}
-		//	else if (move < 650 && move > 600){
-		//		TimerSet(1000);
-		//		state = right;
-		//	}
-		//	else if (move < 700 && move > 650){
-		//		TimerSet(500);
-		//		state = right;
-		//	}
-		//	else if (move < 750 && move > 700){
-		//		TimerSet(250);
-		//		state = right;
-		//	}	
+			else if (move > 150 && move < 320 ){
+				time = 250;
+				TimerSet(250);
+				state = left;
+			}
+			else if (move > 320 && move < 370){
+				TimerSet(500);
+			state = left;
+			}
+			else if (move > 350 && move < 420){
+				TimerSet(1000);
+				state= left;
+			}
+			else if (move < 650 && move > 600){
+				TimerSet(1000);
+				state = right;
+			}
+			else if (move < 700 && move > 650){
+				TimerSet(500);
+				state = right;
+			}
+			else if (move < 750 && move > 700){
+				TimerSet(250);
+				state = right;
+			}	
 			else if (move > 750){
-			//	TimerSet(100);
+				TimerSet(100);
 				state = right;
 			}
 			else{
@@ -132,20 +132,20 @@ void joy(){
 			break;
 		case left:
 			if (move < 150){
-		//		TimerSet(100);
-		//		state = left;
-		//	}
-		//	else if (move > 150 && move < 320){
-		//		TimerSet(250);
-		//		state = left;
-		//	}
-		//	else if (move > 320 && move < 370){
-		//		TimerSet(500);
-		//		state = left;
-		//	}
-		//	else if (move > 350 && move < 420){
-		//		TimerSet(1000);
-		//		state = left;
+				TimerSet(100);
+				state = left;
+			}
+			else if (move > 150 && move < 320){
+				TimerSet(250);
+				state = left;
+			}
+			else if (move > 320 && move < 370){
+				TimerSet(500);
+				state = left;
+			}
+			else if (move > 350 && move < 420){
+				TimerSet(1000);
+			state = left;
 			state = left;
 			}
 			else{
@@ -156,22 +156,22 @@ void joy(){
 			
 		case right:
 			if (move > 750){
-			//	TimerSet(100);
+				TimerSet(100);
 				state = right;
 			}
-		//	else if (move < 750 && move > 700){
-		//		TimerSet(250);
-		//		state = right;
-		//	}
-		//	else if (move < 700 && move > 650){
-		//		TimerSet(500);
-		//		state = right;
-		//	}
-		//	else if (move < 650 && move > 600){
-		//		TimerSet(1000);
-		//		state = right;
-		//	}
-			else{
+			else if (move < 750 && move > 700){
+				TimerSet(250);
+				state = right;
+		}
+			else if (move < 700 && move > 650){
+				TimerSet(500);
+				state = right;
+			}
+			else if (move < 650 && move > 600){
+				TimerSet(1000);
+				state = right;
+			}
+		else{
 				state = start;
 			}
 			break;
@@ -211,10 +211,12 @@ void ud(){
 			if ( val < 150 && flag != 4){
 			flag++;
 			ad = up;
+			TimerSet(100);
 			}
 			else if (val > 700 && flag != 0){
 			flag--;
 			ad = down;
+			TimerSet(100);
 			}
 			else{
 			ad = check;
@@ -224,8 +226,14 @@ void ud(){
 		case up:
 			 if (val < 150 && flag != 4){
 			flag++;
+			TimerSet(100);
 			ad = up;
 			}
+			 else if ( 150 > val && val < 320 && flag != 4){
+			flag++;
+			TimerSet(250);
+			ad = up;
+			 }
 			else{
 			ad = check;
 			}
@@ -236,6 +244,7 @@ void ud(){
 			}
 			else if (val > 700 && flag != 0){
 			flag--;
+			TimerSet(100);
 			ad = down;
 			}
 			else{
