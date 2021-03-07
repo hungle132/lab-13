@@ -77,15 +77,16 @@ void Set_A2D_Pin(unsigned char pinNum) {
 //right max around 750-770
 //neutral is around 400-500
 enum joystick{init,start,left,right}state;
-enum updown {check,up,down} 
+enum updown {check,up,down,reset}ad;
 enum display{show}led;
 unsigned char pattern = 0x80;
 unsigned char row = 0xFE;
 unsigned short move = 0x00;
+unsigned short val = 0x00;
 unsigned char time = 0x00;
 void joy(){
-
-	//move = ADC;
+	Set_A2D_Pin(0x00);
+	move = ADC;
 	switch(state){
 		case init:
 			state = start;
@@ -145,6 +146,7 @@ void joy(){
 		//	else if (move > 350 && move < 420){
 		//		TimerSet(1000);
 		//		state = left;
+			state = left;
 			}
 			else{
 				state = init;
@@ -187,21 +189,81 @@ void joy(){
 			if(pattern == 0x80)
 				state = left;
 			else
-				pattern = pattern << 1;
+				pattern = pattern << 1 ;
 			break;
 		case right:
 			if(pattern == 0x01)
 				state = right;
 			else
-				pattern = pattern >> 1;
+				pattern = pattern >> 1 ;
 			break;
 	}
 	//time = 100;
 	//TimerSet(1);
 
 }
+unsigned char flag = 0x00;
 void ud(){
-	switch(
+	Set_A2D_Pin(0x01);
+	val = ADC;
+	switch(ad){
+		case check:
+			if ( val < 150 && flag != 4){
+			flag++;
+			ad = up;
+			}
+			else if (val > 700 && flag != 0){
+			flag--;
+			ad = down;
+			}
+			else{
+			ad = check;
+			}
+			break;
+
+		case up:
+			 if (val < 150 && flag != 4){
+			flag++;
+			ad = up;
+			}
+			else{
+			ad = check;
+			}
+			break;
+		case down:
+			if (flag == 1){
+			ad = reset;
+			}
+			else if (val > 700 && flag != 0){
+			flag--;
+			ad = down;
+			}
+			else{
+			ad = check;
+			}
+			break;
+		case reset:
+			row = 0xFE;
+			flag = 0x00;
+			PORTC = pattern;
+			PORTD = row;
+			ad = check;
+			break;
+		default:
+			ad = check;
+	}
+	switch(ad){
+		case check:
+			break;
+		case up:
+			row = row << 1 | 0x01;
+			break;
+		case down:
+			row = row >> 1 | 0x01;
+			break;
+		case reset:
+			break;
+	}
 }
 void dis(){
 	switch(led){
@@ -225,14 +287,12 @@ DDRC = 0xFF; PORTC = 0x00;
 DDRD = 0xFF; PORTD = 0x00;
     /* Insert your solution below */
 ADC_init();
-//TimerSet(100);
 TimerOn();
 TimerSet(100);
-//move = ADC;
     while (1) {
-	    move = ADC;
-	    dis();
 	    joy();
+	    ud();
+	    dis();
 	    while(!TimerFlag);
 	    TimerFlag = 0;
     }
